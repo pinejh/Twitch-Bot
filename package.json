@@ -1,0 +1,23 @@
+{
+  "name": "twitch-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinejh/twitch-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pinejh/twitch-bot/issues"
+  },
+  "homepage": "https://github.com/pinejh/twitch-bot#readme",
+  "dependencies": {
+    "jsonfile": "^2.4.0",
+    "tmi.js": "^1.1.2"
+  }
+}
