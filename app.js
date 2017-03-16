@@ -35,22 +35,13 @@ client.on('connected', function(address, port) {
   console.log("Address: " + address + ":" + port);
 
   client.on("join", function (channel, username, self) {
-    console.log(username + " connected.");
     if (self) return;
-    for(player of points) {
-      if(player.name == username) return;
-    }
-    console.log('got this far...');
-    points.push({name:username, points: 1, isHere: true});
-    console.log(points);
+    userJoin(username);
   });
 
   client.on("part", function (channel, username, self) {
-    for(player of points) {
-      if(player.name == username) {
-        player.isHere = false;
-      }
-    }
+    if (self) return;
+    userLeave(username);
   });
 
   client.on("chat", function(channel, userstate, message, self) {
@@ -70,7 +61,8 @@ client.on("disconnected", function(reason) {
 });
 
 function command(channel, userstate, message) {
-  if(message == "!points") {
+  switch(message) {
+  case "!points":
     var pts = -1;
     for(player of points) {
       if(player.name == userstate["display-name"]) {
@@ -80,12 +72,41 @@ function command(channel, userstate, message) {
     if(pts != -1) {
       client.say(channel, userstate["display-name"]+" has "+pts+" points.");
     } else {
-      client.say(channel, userstate["display-name"]+" has no tracked points. Please refresh page to make sure you receive points in the future.");
+      client.say(channel, userstate["display-name"]+" has no tracked points. Type !join to make sure you receive points.");
     }
-  } else if (message == "!shutdown" && userstate["display-name"] == "jcodedev") {
-    client.disconnect();
-  } else {
+    break;
+  case "!join":
+    userJoin(userstate["display-name"]);
+    break;
+  case "!leave":
+    userLeave(userstate["display-name"]);
+    break;
+  case "!shutdown":
+    if(&& userstate["display-name"] == "jcodedev") {
+      client.disconnect();
+    }
+    break;
+  default:
     client.say(channel, "Command unrecognized... Probably just isn't implemented yet.");
+  }
+}
+
+function userJoin(user) {
+    console.log(user + " connected.");
+    for(player of points) {
+      if(player.name == user) {
+        player.isHere = true;
+        return;
+      }
+    }
+    points.push({name:user, points: 1, isHere: true});
+    console.log(points);
+}
+function userLeave(user) {
+  for(player of points) {
+    if(player.name == user) {
+      player.isHere = false;
+    }
   }
 }
 
